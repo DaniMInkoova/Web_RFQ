@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía de Usuario — RFQ Job Executor</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --draxton-red: #CC0000;
+    --draxton-dark: #1a1a1a;
+    --draxton-charcoal: #2c2c2c;
+    --surface-0: #fafaf9;
+    --surface-1: #f5f4f1;
+    --surface-2: #eceae6;
+    --surface-3: #e0ddd7;
+    --text-primary: #1a1a1a;
+    --text-secondary: #5c5a56;
+    --text-muted: #8a8780;
+    --accent-soft: #fff0f0;
+    --accent-border: #ffcccc;
+    --blue-soft: #eef4ff;
+    --blue-border: #c5d9f7;
+    --blue-text: #2d5aa0;
+    --green-soft: #eefbf3;
+    --green-border: #b8e6ca;
+    --green-text: #1a7a3a;
+    --amber-soft: #fff8eb;
+    --amber-border: #f5d98a;
+    --amber-text: #92610a;
+    --purple-soft: #f5f0ff;
+    --purple-border: #d4c4f7;
+    --purple-text: #5b3a9e;
+    --teal-soft: #edfcfc;
+    --teal-border: #a8e8e8;
+    --teal-text: #0e7070;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.05);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; color: var(--text-primary); background: var(--surface-0); line-height: 1.7; font-size: 15.5px; -webkit-font-smoothing: antialiased; }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar { position: fixed; top: 0; left: 0; width: 280px; height: 100vh; background: var(--draxton-dark); z-index: 100; overflow-y: auto; padding: 0 0 40px 0; border-right: 1px solid rgba(255,255,255,0.06); scrollbar-width: thin; scrollbar-color: #444 transparent; }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+  .sidebar-brand { padding: 28px 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 12px; }
+  .sidebar-brand .logo-text { font-family: 'Playfair Display', serif; font-weight: 800; font-size: 20px; color: #fff; letter-spacing: -0.3px; }
+  .sidebar-brand .logo-text span { color: var(--draxton-red); }
+  .sidebar-brand .logo-sub { font-size: 11.5px; color: rgba(255,255,255,0.4); margin-top: 4px; font-weight: 400; letter-spacing: 0.5px; text-transform: uppercase; }
+  .nav-section { padding: 16px 20px 6px; font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.25); font-weight: 600; }
+  .nav-link { display: flex; align-items: center; gap: 10px; padding: 9px 20px 9px 24px; color: rgba(255,255,255,0.55); text-decoration: none; font-size: 13.5px; font-weight: 400; transition: all 0.2s; border-left: 3px solid transparent; }
+  .nav-link:hover { color: #fff; background: rgba(255,255,255,0.04); border-left-color: var(--draxton-red); }
+  .nav-link .nav-icon { font-size: 15px; width: 22px; text-align: center; flex-shrink: 0; }
+  .nav-link.sub { padding-left: 56px; font-size: 12.5px; color: rgba(255,255,255,0.38); }
+  .nav-link.sub:hover { color: rgba(255,255,255,0.8); }
+
+  /* ─── MAIN ─── */
+  .main { margin-left: 280px; min-height: 100vh; }
+
+  /* ─── HERO ─── */
+  .hero { background: var(--draxton-dark); padding: 72px 64px 64px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -120px; right: -80px; width: 500px; height: 500px; background: radial-gradient(circle, rgba(204,0,0,0.12) 0%, transparent 70%); pointer-events: none; }
+  .hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(204,0,0,0.3), transparent); }
+  .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(204,0,0,0.15); border: 1px solid rgba(204,0,0,0.25); color: #ff6b6b; font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; padding: 6px 14px; border-radius: 100px; margin-bottom: 20px; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 800; color: #fff; line-height: 1.15; letter-spacing: -0.5px; max-width: 600px; }
+  .hero h1 span { color: var(--draxton-red); }
+  .hero p { color: rgba(255,255,255,0.5); font-size: 16.5px; margin-top: 16px; max-width: 520px; line-height: 1.7; }
+
+  /* ─── CONTENT ─── */
+  .content { max-width: 860px; padding: 48px 64px 100px; }
+  .section { margin-bottom: 56px; scroll-margin-top: 24px; }
+  .section-label { display: inline-flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--draxton-red); margin-bottom: 8px; }
+  .section-label::before { content: ''; width: 16px; height: 2px; background: var(--draxton-red); border-radius: 2px; }
+  h2 { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.3px; margin-bottom: 16px; line-height: 1.25; }
+  h3 { font-size: 18px; font-weight: 700; color: var(--text-primary); margin: 32px 0 12px; letter-spacing: -0.2px; }
+  p { margin-bottom: 14px; color: var(--text-secondary); }
+  p strong { color: var(--text-primary); font-weight: 600; }
+
+  /* ─── STEP CARDS ─── */
+  .step-card { background: #fff; border: 1px solid var(--surface-3); border-radius: var(--radius); padding: 32px; margin: 24px 0; box-shadow: var(--shadow-sm); position: relative; }
+  .step-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; border-radius: var(--radius) 0 0 var(--radius); }
+  .step-card.red::before { background: var(--draxton-red); }
+  .step-card.blue::before { background: #3b82f6; }
+  .step-card.green::before { background: #22c55e; }
+  .step-card.teal::before { background: #14b8a6; }
+  .step-card.amber::before { background: #f59e0b; }
+  .step-card.purple::before { background: #8b5cf6; }
+  .step-card.slate::before { background: #64748b; }
+  .step-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .step-number { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #fff; flex-shrink: 0; }
+  .step-card.red .step-number { background: var(--draxton-red); }
+  .step-card.blue .step-number { background: #3b82f6; }
+  .step-card.green .step-number { background: #22c55e; }
+  .step-card.teal .step-number { background: #14b8a6; }
+  .step-card.amber .step-number { background: #f59e0b; }
+  .step-card.purple .step-number { background: #8b5cf6; }
+  .step-card.slate .step-number { background: #64748b; }
+  .step-title { font-size: 17px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.2px; }
+  .step-subtitle { font-size: 12.5px; color: var(--text-muted); font-weight: 500; margin-top: 1px; }
+  .step-card p { font-size: 14.5px; margin-bottom: 10px; }
+
+  /* ─── INSTRUCTIONS ─── */
+  .instructions { list-style: none; margin: 14px 0; padding: 0; counter-reset: inst; }
+  .instructions li { position: relative; padding: 7px 0 7px 28px; font-size: 14.5px; color: var(--text-secondary); line-height: 1.6; }
+  .instructions li::before { content: counter(inst); counter-increment: inst; position: absolute; left: 0; top: 8px; width: 19px; height: 19px; border-radius: 50%; background: var(--surface-2); color: var(--text-muted); font-size: 10.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+  /* ─── CALLOUTS ─── */
+  .callout { padding: 16px 20px; border-radius: var(--radius-sm); margin: 16px 0; font-size: 13.5px; line-height: 1.65; display: flex; gap: 12px; }
+  .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .callout p { margin: 0; }
+  .callout.info { background: var(--blue-soft); border: 1px solid var(--blue-border); color: var(--blue-text); }
+  .callout.success { background: var(--green-soft); border: 1px solid var(--green-border); color: var(--green-text); }
+  .callout.warning { background: var(--amber-soft); border: 1px solid var(--amber-border); color: var(--amber-text); }
+  .callout.danger { background: var(--accent-soft); border: 1px solid var(--accent-border); color: #a31515; }
+  .callout.teal { background: var(--teal-soft); border: 1px solid var(--teal-border); color: var(--teal-text); }
+
+  .user-action { background: linear-gradient(135deg, #fdf8f0, #fef9f3); border: 1px dashed #dbc9a8; border-radius: var(--radius-sm); padding: 16px 20px; margin: 16px 0; font-size: 13.5px; color: #7a6540; display: flex; gap: 12px; align-items: flex-start; }
+  .user-action strong { color: #5c4a2a; }
+
+  /* ─── TABLES ─── */
+  .table-wrapper { overflow-x: auto; margin: 16px 0; border-radius: var(--radius-sm); border: 1px solid var(--surface-3); box-shadow: var(--shadow-sm); }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  thead th { background: var(--draxton-charcoal); color: #fff; font-weight: 600; font-size: 11.5px; letter-spacing: 0.5px; text-transform: uppercase; padding: 12px 16px; text-align: left; white-space: nowrap; }
+  tbody td { padding: 11px 16px; border-bottom: 1px solid var(--surface-2); color: var(--text-secondary); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) { background: var(--surface-1); }
+  tbody td:first-child { font-weight: 600; color: var(--text-primary); }
+
+  /* ─── NEW BADGE ─── */
+  .badge-new { display: inline-block; background: #14b8a6; color: #fff; font-size: 9px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; padding: 2px 7px; border-radius: 4px; margin-left: 8px; vertical-align: middle; position: relative; top: -1px; }
+
+  /* ─── FLOW ─── */
+  .flow { display: flex; flex-direction: column; gap: 0; margin: 28px 0; padding: 0 12px; }
+  .flow-step { display: flex; align-items: stretch; gap: 20px; min-height: 72px; }
+  .flow-line { width: 40px; display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+  .flow-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--draxton-red); border: 3px solid #fff; box-shadow: 0 0 0 2px var(--draxton-red); flex-shrink: 0; margin-top: 6px; z-index: 1; }
+  .flow-dot.user { background: #f59e0b; box-shadow: 0 0 0 2px #f59e0b; }
+  .flow-dot.new { background: #14b8a6; box-shadow: 0 0 0 2px #14b8a6; }
+  .flow-connector { flex: 1; width: 2px; background: var(--surface-3); }
+  .flow-content { flex: 1; padding-bottom: 24px; }
+  .flow-content .flow-label { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+  .flow-content .flow-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.55; }
+  .flow-tag { display: inline-block; font-size: 9.5px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; margin-bottom: 4px; }
+  .flow-tag.app { background: rgba(204,0,0,0.1); color: var(--draxton-red); }
+  .flow-tag.user { background: rgba(245,158,11,0.15); color: #92610a; }
+  .flow-tag.new { background: rgba(20,184,166,0.15); color: #0e7070; }
+
+  /* ─── FAQ ─── */
+  .faq-item { border-bottom: 1px solid var(--surface-2); padding: 20px 0; }
+  .faq-item:last-child { border-bottom: none; }
+  .faq-q { font-weight: 700; font-size: 15px; color: var(--text-primary); margin-bottom: 8px; display: flex; align-items: baseline; gap: 10px; }
+  .faq-q::before { content: 'P'; font-size: 10px; font-weight: 800; background: var(--draxton-red); color: #fff; width: 20px; height: 20px; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; top: 1px; }
+  .faq-a { font-size: 14px; color: var(--text-secondary); padding-left: 30px; line-height: 1.7; }
+
+  /* ─── GLOSSARY ─── */
+  .glossary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+  .glossary-item { background: #fff; border: 1px solid var(--surface-3); border-radius: var(--radius-sm); padding: 14px 16px; }
+  .glossary-term { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 500; color: var(--draxton-red); margin-bottom: 4px; }
+  .glossary-def { font-size: 12.5px; color: var(--text-muted); line-height: 1.55; }
+
+  code { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; background: var(--surface-1); border: 1px solid var(--surface-3); padding: 2px 7px; border-radius: 5px; color: var(--text-primary); font-weight: 500; }
+  hr { border: none; height: 1px; background: var(--surface-3); margin: 40px 0; }
+
+  @media (max-width: 1024px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .hero { padding: 48px 32px; }
+    .content { padding: 32px; }
+    .glossary-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══ -->
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <div class="logo-text">DRAXTON <span>RFQ</span></div>
+    <div class="logo-sub">Job Executor — Guía de usuario</div>
+  </div>
+  <div class="nav-section">Introducción</div>
+  <a href="#que-es" class="nav-link"><span class="nav-icon">📖</span> ¿Qué es esta aplicación?</a>
+  <a href="#primeros-pasos" class="nav-link"><span class="nav-icon">🚀</span> Primeros pasos</a>
+  <a href="#operaciones" class="nav-link"><span class="nav-icon">⚙️</span> Operaciones disponibles</a>
+  <div class="nav-section">Flujo de trabajo</div>
+  <a href="#flujo" class="nav-link"><span class="nav-icon">🔄</span> Visión general</a>
+  <a href="#paso1" class="nav-link sub">Paso 1 — Preparar TQP</a>
+  <a href="#paso2" class="nav-link sub">Paso 2 — Recoger datos TQP</a>
+  <a href="#paso3" class="nav-link sub">Paso 3 — Preparar Excel Fundición</a>
+  <a href="#paso3b" class="nav-link sub">Paso 3B — Preparar Excel Mecanizado ✨</a>
+  <a href="#paso4" class="nav-link sub">Paso 4 — Recoger costes Fundición</a>
+  <a href="#paso5" class="nav-link sub">Paso 5 — Recoger costes Mecanizado</a>
+  <a href="#paso6" class="nav-link sub">Paso 6 — Generar PlantillaPA</a>
+  <div class="nav-section">Referencia</div>
+  <a href="#plantas" class="nav-link"><span class="nav-icon">🏭</span> Plantas soportadas</a>
+  <a href="#archivos" class="nav-link"><span class="nav-icon">📁</span> Dónde están los archivos</a>
+  <a href="#faq" class="nav-link"><span class="nav-icon">❓</span> Preguntas frecuentes</a>
+  <a href="#glosario" class="nav-link"><span class="nav-icon">📘</span> Glosario</a>
+</nav>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+  <header class="hero">
+    <div class="hero-badge">📄 Documentación v1.1</div>
+    <h1>Guía de Usuario<br><span>RFQ Job Executor</span></h1>
+    <p>Todo lo que necesitas saber para gestionar los costes de fabricación de tus ofertas de forma rápida y sin errores.</p>
+  </header>
+
+  <div class="content">
+
+    <!-- ═══ QUÉ ES ═══ -->
+    <section class="section" id="que-es">
+      <div class="section-label">Introducción</div>
+      <h2>¿Qué es esta aplicación?</h2>
+      <p>El <strong>RFQ Job Executor</strong> es tu herramienta para gestionar los costes de fabricación de las ofertas (RFQ) en DRAXTON. En lugar de buscar datos manualmente en Expertis y copiarlos a mano en los Excel de costes, esta aplicación lo hace por ti:</p>
+      <p>Consulta el ERP, rellena los archivos Excel, y almacena los resultados para que Controlling pueda utilizarlos. Tú solo introduces el número de oferta, eliges qué operación necesitas, y la aplicación se encarga del resto.</p>
+    </section>
+
+    <!-- ═══ PRIMEROS PASOS ═══ -->
+    <section class="section" id="primeros-pasos">
+      <div class="section-label">Empezar</div>
+      <h2>Primeros pasos</h2>
+      <h3>Abrir la aplicación</h3>
+      <p>Ejecuta <code>main.py</code> desde la carpeta del proyecto. Se abrirá la ventana principal con tres zonas:</p>
+      <div class="callout info">
+        <span class="callout-icon">ℹ️</span>
+        <div>
+          <p><strong>Barra superior:</strong> donde introduces el número de RFQ y la versión de la oferta.</p>
+          <p><strong>Panel izquierdo (Jobs):</strong> lista de operaciones disponibles, agrupadas por área.</p>
+          <p><strong>Panel derecho (Log):</strong> aquí verás en tiempo real qué está haciendo la aplicación.</p>
+        </div>
+      </div>
+      <h3>Datos que necesitas</h3>
+      <p>Para cualquier operación solo necesitas dos datos obligatorios:</p>
+      <p><strong>RFQ Number</strong> — el número de oferta tal como aparece en Expertis (ejemplo: <code>S2020229</code>).</p>
+      <p><strong>Version</strong> — la revisión de la oferta (ejemplo: <code>1</code>).</p>
+      <p>Dependiendo de la operación que elijas, la aplicación te pedirá datos adicionales a través de ventanas emergentes. No necesitas recordar nada más de antemano.</p>
+    </section>
+
+    <!-- ═══ OPERACIONES ═══ -->
+    <section class="section" id="operaciones">
+      <div class="section-label">Referencia</div>
+      <h2>¿Qué operaciones puedo hacer?</h2>
+      <p>La aplicación tiene <strong>7 operaciones</strong> organizadas en dos áreas. Piensa en ellas como un proceso en cadena: primero se preparan los datos (<em>Data Insert</em>), y después se recogen los resultados (<em>Data Recolect</em>).</p>
+
+      <h3>🔧 Área de Ingeniería</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Operación</th><th>¿Para qué sirve?</th></tr></thead>
+          <tbody>
+            <tr><td>TQP Data Insert</td><td>Prepara el archivo TQP con los datos de la oferta del ERP</td></tr>
+            <tr><td>Process Casting Cost Data Insert</td><td>Prepara el Excel de costes de fundición con datos del ERP y del TQP</td></tr>
+            <tr><td>Process Machining Data Insert <span class="badge-new">Nuevo</span></td><td>Prepara los Excel de costes de mecanizado con datos del ERP y del TQP</td></tr>
+            <tr><td>TQP Brakes Data Recolection</td><td>Recoge los datos técnicos del TQP ya completado y los guarda</td></tr>
+            <tr><td>Process Casting Cost Data Recolect</td><td>Recoge los costes de fundición del Excel y los guarda</td></tr>
+            <tr><td>Process Machining Data Recolect</td><td>Recoge los costes de mecanizado del Excel y los guarda</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>📊 Área de Controlling</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Operación</th><th>¿Para qué sirve?</th></tr></thead>
+          <tbody>
+            <tr><td>PA Data Insert</td><td>Genera el archivo PlantillaPA para Controlling con los costes ya guardados</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- ═══ FLUJO GENERAL ═══ -->
+    <section class="section" id="flujo">
+      <div class="section-label">Flujo de trabajo</div>
+      <h2>Visión general del proceso</h2>
+      <p>A continuación se muestra el proceso completo para una oferta nueva, en el orden recomendado. No es obligatorio ejecutar todos los pasos cada vez; depende de lo que necesites.</p>
+
+      <div class="flow">
+        <div class="flow-step">
+          <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+          <div class="flow-content">
+            <span class="flow-tag app">Aplicación</span>
+            <div class="flow-label">Paso 1 — TQP Data Insert</div>
+            <div class="flow-desc">La aplicación rellena el archivo TQP con datos del ERP (cliente, referencia, volúmenes).</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-line"><div class="flow-dot user"></div><div class="flow-connector"></div></div>
+          <div class="flow-content">
+            <span class="flow-tag user">Tú</span>
+            <div class="flow-label">Completar datos técnicos en el TQP</div>
+            <div class="flow-desc">Abres el Excel generado y rellenas las hojas T.Q.P.1 a T.Q.P.6 que apliquen.</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+          <div class="flow-content">
+            <span class="flow-tag app">Aplicación</span>
+            <div class="flow-label">Paso 2 — TQP Brakes Data Recolection</div>
+            <div class="flow-desc">La aplicación lee lo que has completado en el TQP y lo guarda en el sistema.</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+          <div class="flow-content">
+            <span class="flow-tag app">Aplicación</span>
+            <div class="flow-label">Paso 3 — Casting Cost Data Insert</div>
+            <div class="flow-desc">Crea el Excel de costes de fundición con datos del ERP y los datos técnicos del TQP.</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-line"><div class="flow-dot new"></div><div class="flow-connector"></div></div>
+          <div class="flow-content">
+            <span class="flow-tag new">Aplicación · Nuevo</span>
+            <div class="flow-label">Paso 3B — Machining Data Insert</div>
+            <div class="flow-desc">Crea los Excel de costes de mecanizado (uno por planta) con datos del ERP y del TQP.</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-line"><div class="flow-dot user"></div><div class="flow-connector"></div></div>
+          <div class="flow-content">
+            <span class="flow-tag user">Tú</span>
+            <div class="flow-label">Completar/ajustar costes en los Excel</div>
+            <div class="flow-desc">Revisas y completas los costes de fundición y/o mecanizado en los archivos generados.</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+          <div class="flow-content">
+            <span class="flow-tag app">Aplicación</span>
+            <div class="flow-label">Pasos 4 y 5 — Recoger costes</div>
+            <div class="flow-desc">La aplicación lee tus Excel de fundición y/o mecanizado y guarda los datos.</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector" style="background:transparent;"></div></div>
+          <div class="flow-content">
+            <span class="flow-tag app">Aplicación</span>
+            <div class="flow-label">Paso 6 — PA Data Insert (Controlling)</div>
+            <div class="flow-desc">Genera la PlantillaPA para Controlling con los costes guardados.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- ═══ PASO 1 ═══ -->
+    <section class="section" id="paso1">
+      <div class="step-card red">
+        <div class="step-header">
+          <div class="step-number">1</div>
+          <div><div class="step-title">Preparar el TQP</div><div class="step-subtitle">Operación: TQP Data Insert</div></div>
+        </div>
+        <p><strong>Qué hace:</strong> Toma los datos básicos de la oferta desde Expertis (cliente, referencia, volúmenes de producción…) y los escribe automáticamente en el archivo TQP.</p>
+        <h3>Cómo hacerlo</h3>
+        <ol class="instructions">
+          <li>Escribe el <strong>RFQ Number</strong> y la <strong>Version</strong> en la barra superior.</li>
+          <li>Marca la casilla <strong>TQP Data Insert</strong> en el panel de jobs.</li>
+          <li>Pulsa <strong>Execute Selected Jobs</strong>.</li>
+          <li>La aplicación generará el archivo en <code>Ingenieria Output/TQP/</code>.</li>
+        </ol>
+        <div class="user-action">
+          <span>✏️</span>
+          <div><strong>Después de este paso:</strong> Abre el archivo TQP generado y completa manualmente los datos técnicos en las hojas T.Q.P.1 a T.Q.P.6 (las que apliquen). Marca con <strong>"YES"</strong> en las celdas E30‑E35 de la hoja "Preliminary info" las cotizaciones que quieras procesar.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ PASO 2 ═══ -->
+    <section class="section" id="paso2">
+      <div class="step-card blue">
+        <div class="step-header">
+          <div class="step-number">2</div>
+          <div><div class="step-title">Recoger datos del TQP</div><div class="step-subtitle">Operación: TQP Brakes Data Recolection</div></div>
+        </div>
+        <p><strong>Qué hace:</strong> Lee los datos técnicos que has completado en las hojas T.Q.P. del archivo Excel y los guarda en el sistema para usarlos en pasos siguientes.</p>
+        <h3>Cómo hacerlo</h3>
+        <ol class="instructions">
+          <li>Escribe el <strong>RFQ Number</strong> y la <strong>Version</strong>.</li>
+          <li>Marca <strong>TQP Brakes Data Recolection</strong>.</li>
+          <li>Pulsa <strong>Execute</strong>.</li>
+          <li>En la ventana que aparece, verás las versiones de datos TQP que ya existen.</li>
+          <li>Indica el <strong>número de versión</strong> que quieres crear o sobrescribir.</li>
+          <li>Confirma y la aplicación leerá el Excel y guardará los datos.</li>
+        </ol>
+        <div class="callout info">
+          <span class="callout-icon">💡</span>
+          <div><p><strong>Sobre las versiones:</strong> Si es la primera vez, usa la versión <strong>0</strong>. Si modificas el TQP y quieres guardar una nueva iteración, incrementa el número. El sistema te avisará si ya existe esa versión y la sobrescribirá.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ PASO 3 ═══ -->
+    <section class="section" id="paso3">
+      <div class="step-card green">
+        <div class="step-header">
+          <div class="step-number">3</div>
+          <div><div class="step-title">Preparar el Excel de Fundición</div><div class="step-subtitle">Operación: Process Casting Cost Data Insert</div></div>
+        </div>
+        <p><strong>Qué hace:</strong> Crea el archivo Excel de costes de ingeniería (CostesIngenieria) y lo rellena con los datos del ERP y los datos técnicos del TQP que recogiste en el paso anterior.</p>
+        <h3>Cómo hacerlo</h3>
+        <ol class="instructions">
+          <li>Escribe el <strong>RFQ Number</strong> y la <strong>Version</strong>.</li>
+          <li>Marca <strong>Process Casting Cost Data Insert</strong>.</li>
+          <li>Pulsa <strong>Execute</strong>.</li>
+          <li>En el diálogo que aparece, elige el tipo: <strong>Brakes</strong> o <strong>Transmission</strong>.</li>
+          <li>Selecciona la <strong>versión TQP</strong> y la <strong>cotización</strong> (T.Q.P.1, T.Q.P.2…) que quieres usar.</li>
+          <li>Pulsa <strong>Execute</strong> dentro del diálogo.</li>
+          <li>El archivo se generará en <code>Ingenieria Output/Casting/</code>.</li>
+        </ol>
+        <div class="user-action">
+          <span>✏️</span>
+          <div><strong>Después de este paso:</strong> Abre el archivo de costes generado y completa o ajusta manualmente los costes de materiales, totales y cualquier dato que necesite revisión en las hojas de fundición (Fund. D.BCN, Fund. D.ROV, etc.).</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ PASO 3B — NUEVO ═══ -->
+    <section class="section" id="paso3b">
+      <div class="step-card teal">
+        <div class="step-header">
+          <div class="step-number">3B</div>
+          <div><div class="step-title">Preparar los Excel de Mecanizado <span class="badge-new">Nuevo</span></div><div class="step-subtitle">Operación: Process Machining Data Insert</div></div>
+        </div>
+        <p><strong>Qué hace:</strong> Crea los archivos Excel de costes de mecanizado para las plantas que selecciones. Toma los datos de la oferta desde Expertis (referencia, responsable de logística, volúmenes de producción por año) y los escribe automáticamente en los Excel de cada planta.</p>
+
+        <div class="callout teal">
+          <span class="callout-icon">✨</span>
+          <div><p><strong>¿En qué se diferencia del Casting Data Insert?</strong> Mientras que el Casting genera un único archivo compartido para todas las plantas de fundición, el Machining genera <strong>un archivo independiente por cada planta</strong> (Lleida, Wroclaw o Wuhu), ya que cada una tiene su propia plantilla con estructura diferente.</p></div>
+        </div>
+
+        <h3>Cómo hacerlo</h3>
+        <ol class="instructions">
+          <li>Escribe el <strong>RFQ Number</strong> y la <strong>Version</strong>.</li>
+          <li>Marca <strong>Process Machining Data Insert</strong> en el panel de jobs.</li>
+          <li>Pulsa <strong>Execute</strong>.</li>
+          <li>Se abrirá el diálogo de <strong>Machining Data Insert</strong> con tres secciones:</li>
+        </ol>
+
+        <h3>Sección A — Versiones TQP existentes</h3>
+        <p>En la parte superior verás una tabla informativa con las versiones de datos TQP que ya existen para esta oferta: versión, cotización y planta asociada. Esto te sirve como referencia para elegir qué datos usar.</p>
+
+        <h3>Sección B — Seleccionar origen TQP</h3>
+        <p>Elige la fuente de datos técnicos del TQP:</p>
+        <ol class="instructions">
+          <li>En el desplegable <strong>Version</strong>, selecciona la versión de datos TQP que quieres usar (la que guardaste en el Paso 2).</li>
+          <li>En el desplegable <strong>Quotation</strong>, elige la cotización específica (T.Q.P.1, T.Q.P.2…). Las cotizaciones disponibles se actualizan automáticamente al cambiar la versión.</li>
+        </ol>
+
+        <h3>Sección C — Seleccionar plantas destino</h3>
+        <p>Marca con las casillas las plantas para las que quieres generar el archivo de mecanizado. Puedes seleccionar <strong>varias plantas a la vez</strong>:</p>
+        <ol class="instructions">
+          <li>☐ <strong>DRAXTON Lleida</strong></li>
+          <li>☐ <strong>DRAXTON Wroclaw</strong></li>
+          <li>☐ <strong>DRAXTON Wuhu</strong></li>
+        </ol>
+
+        <p>Pulsa <strong>Confirm</strong>. La aplicación te pedirá una confirmación final mostrando un resumen de lo que va a ejecutar (RFQ, versión TQP, cotización y plantas). Pulsa <strong>Sí</strong> y el proceso arrancará.</p>
+
+        <div class="callout info">
+          <span class="callout-icon">📥</span>
+          <div>
+            <p><strong>¿Qué datos se escriben?</strong> Para cada planta seleccionada, la aplicación:</p>
+            <p>• Copia la plantilla de la planta como archivo de trabajo.</p>
+            <p>• Escribe el <strong>nombre de la planta</strong>, el <strong>responsable de logística</strong> y la <strong>referencia</strong> en la hoja de cabecera.</p>
+            <p>• Escribe los <strong>volúmenes de producción por año</strong> (hasta 6 años) en la hoja Cap&amp;Inv.</p>
+          </div>
+        </div>
+
+        <div class="callout success">
+          <span class="callout-icon">📁</span>
+          <div><p><strong>Archivos generados:</strong> Los archivos aparecerán en subcarpetas dentro de <code>Ingenieria Output/Machining/</code>, una por planta. Ejemplo: <code>Ingenieria Output/Machining/LLEIDA/Cost_Machining_RFQS2020229_v1_LLEIDA.xlsx</code></p></div>
+        </div>
+
+        <div class="user-action">
+          <span>✏️</span>
+          <div><strong>Después de este paso:</strong> Abre cada archivo generado y completa manualmente los costes de mecanizado: escandallo de costes, datos de inversión (Cap&Inv) y cualquier otro dato necesario. Una vez completados, estarán listos para el Paso 5 (Machining Data Recolect).</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ PASO 4 ═══ -->
+    <section class="section" id="paso4">
+      <div class="step-card amber">
+        <div class="step-header">
+          <div class="step-number">4</div>
+          <div><div class="step-title">Recoger costes de Fundición</div><div class="step-subtitle">Operación: Process Casting Cost Data Recolect</div></div>
+        </div>
+        <p><strong>Qué hace:</strong> Lee todo el contenido del Excel de costes de fundición que has completado y lo guarda en el sistema: cabecera, información general, costes de materiales, totales, estudio técnico y datos PA.</p>
+        <h3>Cómo hacerlo</h3>
+        <ol class="instructions">
+          <li>Escribe el <strong>RFQ Number</strong> y la <strong>Version</strong>.</li>
+          <li>Marca <strong>Process Casting Cost Data Recolect</strong>.</li>
+          <li>Pulsa <strong>Execute</strong>.</li>
+          <li>Se abrirá la ventana <strong>Technical Study Version</strong>.</li>
+          <li>Consulta la tabla de versiones existentes para ver qué ya se ha guardado.</li>
+          <li>Indica la <strong>versión de estudio</strong> (normalmente <strong>1</strong> para la primera).</li>
+          <li>Selecciona <strong>UNA planta</strong> de la lista (Barcelona, Teruel KW, Teruel DS, Rovigo, Atxondo, China, Brno o Wroclaw).</li>
+          <li>Pulsa <strong>Confirm</strong> y confirma la ejecución.</li>
+        </ol>
+        <div class="callout warning">
+          <span class="callout-icon">🔁</span>
+          <div><p><strong>Repite este paso</strong> para cada planta que necesites procesar, seleccionando una planta diferente cada vez. Solo se procesa una planta por ejecución.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ PASO 5 ═══ -->
+    <section class="section" id="paso5">
+      <div class="step-card purple">
+        <div class="step-header">
+          <div class="step-number">5</div>
+          <div><div class="step-title">Recoger costes de Mecanizado</div><div class="step-subtitle">Operación: Process Machining Data Recolect</div></div>
+        </div>
+        <p><strong>Qué hace:</strong> Lo mismo que el paso anterior pero para los costes de mecanizado. Lee los archivos Excel de machining y guarda los datos de inversión y costes PA.</p>
+        <h3>Cómo hacerlo</h3>
+        <ol class="instructions">
+          <li>Escribe el <strong>RFQ Number</strong> y la <strong>Version</strong>.</li>
+          <li>Marca <strong>Process Machining Data Recolect</strong>.</li>
+          <li>Pulsa <strong>Execute</strong>.</li>
+          <li>En la ventana de <strong>Technical Study Version</strong>, las plantas disponibles son: <strong>Lleida</strong>, <strong>Wroclaw</strong> y <strong>Wuhu</strong>.</li>
+          <li>Selecciona la versión de estudio y la planta.</li>
+          <li>Confirma y la aplicación procesará el archivo Excel correspondiente.</li>
+        </ol>
+        <div class="callout info">
+          <span class="callout-icon">🔗</span>
+          <div><p><strong>Requisito previo:</strong> Debes haber ejecutado el <strong>Paso 3B (Machining Data Insert)</strong> antes para que exista el archivo base. El Recolect busca el archivo generado por el Insert, lo lee y renombra añadiendo la versión de estudio.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ PASO 6 ═══ -->
+    <section class="section" id="paso6">
+      <div class="step-card slate">
+        <div class="step-header">
+          <div class="step-number">6</div>
+          <div><div class="step-title">Generar archivo para Controlling</div><div class="step-subtitle">Operación: PA Data Insert</div></div>
+        </div>
+        <p><strong>Qué hace:</strong> Toma los costes guardados en los pasos anteriores (fundición o mecanizado) y los escribe en la PlantillaPA, el archivo que usa Controlling para sus análisis.</p>
+        <h3>Cómo hacerlo</h3>
+        <ol class="instructions">
+          <li>Escribe el <strong>RFQ Number</strong> y la <strong>Version</strong>.</li>
+          <li>Marca <strong>PA Data Insert</strong>.</li>
+          <li>Pulsa <strong>Execute</strong>.</li>
+          <li>En la ventana, elige el origen de costes pulsando <strong>Casting</strong> o <strong>Machining</strong>.</li>
+          <li>Selecciona la <strong>planta origen</strong> y la <strong>versión de estudio</strong>.</li>
+          <li>Indica la <strong>versión de Controlling</strong> que quieres crear.</li>
+          <li>Marca las <strong>Databases</strong> (hojas) donde escribir: Database A, B, C… hasta J.</li>
+          <li>Pulsa <strong>Confirm &amp; Execute</strong>.</li>
+        </ol>
+        <div class="callout success">
+          <span class="callout-icon">✅</span>
+          <div>
+            <p><strong>Sobre las Databases:</strong> Cada "Database" es una hoja dentro del archivo PlantillaPA. Si el archivo ya existe, la aplicación solo actualizará las hojas que hayas seleccionado sin tocar las demás.</p>
+            <p><strong>Casting vs Machining:</strong> Al elegir Casting, los costes se escriben en la columna G. Al elegir Machining, en la columna D. Esto es automático.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- ═══ PLANTAS ═══ -->
+    <section class="section" id="plantas">
+      <div class="section-label">Referencia</div>
+      <h2>Plantas soportadas</h2>
+      <h3>🔩 Fundición (Casting)</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Planta</th><th>Hoja Excel</th></tr></thead>
+          <tbody>
+            <tr><td>DRAXTON Barcelona</td><td>Fund. D.BCN + D.TER</td></tr>
+            <tr><td>DRAXTON Teruel KW</td><td>Fund. D.BCN + D.TER</td></tr>
+            <tr><td>DRAXTON Teruel DS</td><td>Fund. D.BCN + D.TER</td></tr>
+            <tr><td>DRAXTON Rovigo</td><td>Fund. D. ROV</td></tr>
+            <tr><td>DRAXTON Atxondo</td><td>Fund. D. ATX</td></tr>
+            <tr><td>DRAXTON China</td><td>Fund. D. CHI</td></tr>
+            <tr><td>DRAXTON Brno</td><td>Fund. D. BRN</td></tr>
+            <tr><td>DRAXTON Wroclaw</td><td>Fund. D.WRO (archivo propio)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>⚙️ Mecanizado (Machining)</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Planta</th><th>Plantilla</th><th>Hoja cabecera</th><th>Carpeta de salida</th></tr></thead>
+          <tbody>
+            <tr><td>DRAXTON Lleida</td><td>Cost_Machining_LLE.xlsx</td><td>plantilla coste mecanizado</td><td><code>Machining/LLEIDA/</code></td></tr>
+            <tr><td>DRAXTON Wroclaw</td><td>Cost_Machining_WRO.xlsx</td><td>plantilla coste mecanizado</td><td><code>Machining/WROCLAW/</code></td></tr>
+            <tr><td>DRAXTON Wuhu</td><td>Cost_Machining_Wuhu.xlsx</td><td>Escandallo</td><td><code>Machining/WUHU/</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout info">
+        <span class="callout-icon">ℹ️</span>
+        <div><p><strong>Nota:</strong> Wroclaw aparece tanto en Fundición como en Mecanizado porque tiene ambos procesos. Wuhu tiene una estructura de Excel diferente (hoja "Escandallo" en lugar de "plantilla coste mecanizado").</p></div>
+      </div>
+    </section>
+
+    <!-- ═══ ARCHIVOS ═══ -->
+    <section class="section" id="archivos">
+      <div class="section-label">Referencia</div>
+      <h2>¿Dónde están los archivos generados?</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Tipo</th><th>Carpeta</th><th>Nombre del archivo</th></tr></thead>
+          <tbody>
+            <tr><td>TQP</td><td><code>Ingenieria Output/TQP/</code></td><td>TQP.xlsm</td></tr>
+            <tr><td>Costes Fundición (base)</td><td><code>Ingenieria Output/Casting/</code></td><td>CostesIngenieria_RFQ{nº}_v{ver}.xlsx</td></tr>
+            <tr><td>Costes Fundición (estudio)</td><td><code>Ingenieria Output/Casting/</code></td><td>CostesIngenieria_RFQ{nº}_v{ver}_{Planta}_study{sv}.xlsx</td></tr>
+            <tr><td>Costes Mecanizado (base) <span class="badge-new">Nuevo</span></td><td><code>Ingenieria Output/Machining/{PLANTA}/</code></td><td>Cost_Machining_RFQ{nº}_v{ver}_{PLANTA}.xlsx</td></tr>
+            <tr><td>Costes Mecanizado (estudio)</td><td><code>Ingenieria Output/Machining/{PLANTA}/</code></td><td>Cost_Machining_RFQ{nº}_v{ver}_{PLANTA}_sv{sv}.xlsx</td></tr>
+            <tr><td>PlantillaPA</td><td><code>Controlling Output/</code></td><td>PlantillaPA_RFQ{nº}_v{ver}_ctrl{cv}.xlsx</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- ═══ FAQ ═══ -->
+    <section class="section" id="faq">
+      <div class="section-label">Ayuda</div>
+      <h2>Preguntas frecuentes</h2>
+
+      <div class="faq-item">
+        <div class="faq-q">¿Puedo ejecutar varios jobs a la vez?</div>
+        <div class="faq-a">Sí, puedes marcar varias casillas y ejecutarlos juntos. La aplicación los procesará en orden. Ten en cuenta que algunos jobs dependen de que otros se hayan ejecutado antes.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">¿Qué pasa si ya existe una versión de estudio para esa planta?</div>
+        <div class="faq-a">El sistema te lo mostrará en la tabla de versiones existentes. Si intentas guardar con la misma combinación (RFQ + versión + versión de estudio + planta), el sistema detectará el duplicado. Usa un número de versión de estudio diferente.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">¿Puedo procesar varias plantas a la vez?</div>
+        <div class="faq-a">Depende de la operación. En el <strong>Machining Data Insert (Paso 3B)</strong> sí puedes seleccionar varias plantas a la vez y se genera un archivo para cada una. En los <strong>Recolect (Pasos 4 y 5)</strong> solo se procesa una planta por ejecución.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">¿Necesito ejecutar el Machining Data Insert antes del Machining Data Recolect?</div>
+        <div class="faq-a">Sí. El Recolect (Paso 5) busca el archivo base generado por el Insert (Paso 3B). Si el archivo no existe, verás un mensaje de error indicando que ejecutes primero el Insert.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">¿Necesito volver a ejecutar el Data Insert si quiero hacer otro estudio de fundición?</div>
+        <div class="faq-a">Sí. El archivo base de fundición se consume al crear la copia de trabajo del primer Recolect. Si quieres hacer un nuevo estudio, ejecuta de nuevo el Casting Data Insert para regenerar el archivo base.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">¿Puedo cambiar entre Casting y Machining en el diálogo de Controlling?</div>
+        <div class="faq-a">Sí. En la ventana de PA Data Insert hay dos botones (Casting / Machining) que cambian tanto la tabla de versiones mostrada como la columna Excel donde se escribirán los costes.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">¿Qué hago si la aplicación muestra un error de conexión?</div>
+        <div class="faq-a">Verifica que el archivo <code>.env</code> tenga las credenciales correctas de la base de datos y que tengas acceso a la red donde está el servidor. Si el problema persiste, revisa el panel de Log para ver el mensaje detallado.</div>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- ═══ GLOSARIO ═══ -->
+    <section class="section" id="glosario">
+      <div class="section-label">Referencia</div>
+      <h2>Glosario</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">RFQ</div><div class="glossary-def">Request for Quotation — solicitud de cotización de un cliente.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Version</div><div class="glossary-def">Revisión de la oferta comercial en Expertis.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Study Version</div><div class="glossary-def">Número de iteración del análisis de costes para una planta concreta.</div></div>
+        <div class="glossary-item"><div class="glossary-term">TQP</div><div class="glossary-def">Technical Quotation Parameters — datos técnicos de la pieza.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Data Insert</div><div class="glossary-def">Operación que rellena un Excel automáticamente con datos del ERP.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Data Recolect</div><div class="glossary-def">Operación que lee un Excel ya completado y guarda los resultados.</div></div>
+        <div class="glossary-item"><div class="glossary-term">PlantillaPA</div><div class="glossary-def">Archivo Excel que usa Controlling para sus análisis de costes.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Database A–J</div><div class="glossary-def">Hojas dentro de la PlantillaPA, cada una para un escenario diferente.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Fundición / Casting</div><div class="glossary-def">Proceso de fundición de piezas metálicas.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Machining / Mecanizado</div><div class="glossary-def">Proceso de mecanizado posterior a la fundición.</div></div>
+      </div>
+    </section>
+
+    <div style="text-align:center; padding: 40px 0 0; border-top: 1px solid var(--surface-3); margin-top: 40px;">
+      <p style="font-size:12px; color:var(--text-muted);">DRAXTON RFQ Job Executor — Guía de Usuario v1.1 — Febrero 2026</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>
