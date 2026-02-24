@@ -206,7 +206,7 @@
 <!-- ═══ MAIN ═══ -->
 <div class="main">
   <header class="hero">
-    <div class="hero-badge">📄 Documentación v1.1</div>
+    <div class="hero-badge">📄 Documentación v1.2</div>
     <h1>Guía de Usuario<br><span>RFQ Job Executor</span></h1>
     <p>Todo lo que necesitas saber para gestionar los costes de fabricación de tus ofertas de forma rápida y sin errores.</p>
   </header>
@@ -255,7 +255,7 @@
           <tbody>
             <tr><td>TQP Data Insert</td><td>Prepara el archivo TQP con los datos de la oferta del ERP</td></tr>
             <tr><td>Process Casting Cost Data Insert</td><td>Prepara el Excel de costes de fundición con datos del ERP y del TQP</td></tr>
-            <tr><td>Process Machining Data Insert <span class="badge-new">Nuevo</span></td><td>Prepara los Excel de costes de mecanizado con datos del ERP y del TQP</td></tr>
+            <tr><td>Process Machining Data Insert <span class="badge-new">Nuevo</span></td><td>Prepara los Excel de costes de mecanizado con datos directos del ERP (sin TQP)</td></tr>
             <tr><td>TQP Brakes Data Recolection</td><td>Recoge los datos técnicos del TQP ya completado y los guarda</td></tr>
             <tr><td>Process Casting Cost Data Recolect</td><td>Recoge los costes de fundición del Excel y los guarda</td></tr>
             <tr><td>Process Machining Data Recolect</td><td>Recoge los costes de mecanizado del Excel y los guarda</td></tr>
@@ -320,7 +320,7 @@
           <div class="flow-content">
             <span class="flow-tag new">Aplicación · Nuevo</span>
             <div class="flow-label">Paso 3B — Machining Data Insert</div>
-            <div class="flow-desc">Crea los Excel de costes de mecanizado (uno por planta) con datos del ERP y del TQP.</div>
+            <div class="flow-desc">Crea los Excel de costes de mecanizado (uno por planta) con datos directos del ERP (sin TQP).</div>
           </div>
         </div>
         <div class="flow-step">
@@ -430,11 +430,15 @@
           <div class="step-number">3B</div>
           <div><div class="step-title">Preparar los Excel de Mecanizado <span class="badge-new">Nuevo</span></div><div class="step-subtitle">Operación: Process Machining Data Insert</div></div>
         </div>
-        <p><strong>Qué hace:</strong> Crea los archivos Excel de costes de mecanizado para las plantas que selecciones. Toma los datos de la oferta desde Expertis (referencia, responsable de logística, volúmenes de producción por año) y los escribe automáticamente en los Excel de cada planta.</p>
+        <p><strong>Qué hace:</strong> Crea los archivos Excel de costes de mecanizado para las plantas que selecciones. Toma los datos de la oferta <strong>directamente desde Expertis</strong> (referencia, responsable de logística, volúmenes de producción por año) y los escribe automáticamente en los Excel de cada planta.</p>
 
         <div class="callout teal">
           <span class="callout-icon">✨</span>
-          <div><p><strong>¿En qué se diferencia del Casting Data Insert?</strong> Mientras que el Casting genera un único archivo compartido para todas las plantas de fundición, el Machining genera <strong>un archivo independiente por cada planta</strong> (Lleida, Wroclaw o Wuhu), ya que cada una tiene su propia plantilla con estructura diferente.</p></div>
+          <div>
+            <p><strong>¿En qué se diferencia del Casting Data Insert?</strong> Dos diferencias importantes:</p>
+            <p>• <strong>No necesita datos del TQP.</strong> El Machining Data Insert trabaja exclusivamente con datos de Expertis. No es necesario haber ejecutado los pasos 1 y 2 (TQP) para usar esta operación.</p>
+            <p>• <strong>Genera un archivo por planta.</strong> Mientras que el Casting genera un único archivo compartido, el Machining genera un archivo independiente por cada planta (Lleida, Wroclaw o Wuhu), ya que cada una tiene su propia plantilla con estructura diferente.</p>
+          </div>
         </div>
 
         <h3>Cómo hacerlo</h3>
@@ -442,36 +446,27 @@
           <li>Escribe el <strong>RFQ Number</strong> y la <strong>Version</strong>.</li>
           <li>Marca <strong>Process Machining Data Insert</strong> en el panel de jobs.</li>
           <li>Pulsa <strong>Execute</strong>.</li>
-          <li>Se abrirá el diálogo de <strong>Machining Data Insert</strong> con tres secciones:</li>
+          <li>Se abrirá el diálogo de <strong>Machining Data Insert</strong>.</li>
         </ol>
 
-        <h3>Sección A — Versiones TQP existentes</h3>
-        <p>En la parte superior verás una tabla informativa con las versiones de datos TQP que ya existen para esta oferta: versión, cotización y planta asociada. Esto te sirve como referencia para elegir qué datos usar.</p>
-
-        <h3>Sección B — Seleccionar origen TQP</h3>
-        <p>Elige la fuente de datos técnicos del TQP:</p>
-        <ol class="instructions">
-          <li>En el desplegable <strong>Version</strong>, selecciona la versión de datos TQP que quieres usar (la que guardaste en el Paso 2).</li>
-          <li>En el desplegable <strong>Quotation</strong>, elige la cotización específica (T.Q.P.1, T.Q.P.2…). Las cotizaciones disponibles se actualizan automáticamente al cambiar la versión.</li>
-        </ol>
-
-        <h3>Sección C — Seleccionar plantas destino</h3>
-        <p>Marca con las casillas las plantas para las que quieres generar el archivo de mecanizado. Puedes seleccionar <strong>varias plantas a la vez</strong>:</p>
+        <h3>Seleccionar plantas destino</h3>
+        <p>En el diálogo, marca con las casillas las plantas para las que quieres generar el archivo de mecanizado. Puedes seleccionar <strong>varias plantas a la vez</strong>:</p>
         <ol class="instructions">
           <li>☐ <strong>DRAXTON Lleida</strong></li>
           <li>☐ <strong>DRAXTON Wroclaw</strong></li>
           <li>☐ <strong>DRAXTON Wuhu</strong></li>
         </ol>
 
-        <p>Pulsa <strong>Confirm</strong>. La aplicación te pedirá una confirmación final mostrando un resumen de lo que va a ejecutar (RFQ, versión TQP, cotización y plantas). Pulsa <strong>Sí</strong> y el proceso arrancará.</p>
+        <p>Pulsa <strong>Confirm</strong>. La aplicación te pedirá una confirmación final mostrando un resumen: RFQ, versión y plantas seleccionadas. Pulsa <strong>Sí</strong> y el proceso arrancará.</p>
 
         <div class="callout info">
           <span class="callout-icon">📥</span>
           <div>
-            <p><strong>¿Qué datos se escriben?</strong> Para cada planta seleccionada, la aplicación:</p>
+            <p><strong>¿Qué datos se escriben automáticamente?</strong> Para cada planta seleccionada, la aplicación:</p>
             <p>• Copia la plantilla de la planta como archivo de trabajo.</p>
             <p>• Escribe el <strong>nombre de la planta</strong>, el <strong>responsable de logística</strong> y la <strong>referencia</strong> en la hoja de cabecera.</p>
             <p>• Escribe los <strong>volúmenes de producción por año</strong> (hasta 6 años) en la hoja Cap&amp;Inv.</p>
+            <p>Todos estos datos se extraen directamente de Expertis, sin intervención del TQP.</p>
           </div>
         </div>
 
@@ -682,7 +677,7 @@
     </section>
 
     <div style="text-align:center; padding: 40px 0 0; border-top: 1px solid var(--surface-3); margin-top: 40px;">
-      <p style="font-size:12px; color:var(--text-muted);">DRAXTON RFQ Job Executor — Guía de Usuario v1.1 — Febrero 2026</p>
+      <p style="font-size:12px; color:var(--text-muted);">DRAXTON RFQ Job Executor — Guía de Usuario v1.2 — Febrero 2026</p>
     </div>
   </div>
 </div>
